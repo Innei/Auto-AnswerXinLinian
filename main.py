@@ -7,7 +7,10 @@ from selenium.webdriver.support.ui import Select
 import time
 from parse_answer import *
 from answer import *
+import os
 
+user = input('username: ')
+passwd = input('password: ')
 browser = webdriver.Chrome()
 browser.get('http://192.168.9.12/npels/')
 wait = WebDriverWait(browser, 10)
@@ -168,6 +171,19 @@ def answer_part_two():
         elif ansll[current - 1] == 'N':
             Select(select).select_by_index(13)
             current += 1
+        elif ansll[current - 1] == 'O':
+            Select(select).select_by_index(14)
+            current += 1
+        elif ansll[current - 1] == 'P':
+            Select(select).select_by_index(15)
+            current += 1
+        elif ansll[current - 1] == 'Q':
+            Select(select).select_by_index(16)
+            current += 1
+    if os.path.exists('EnglishAnswer.html'):
+        os.remove('EnglishAnswer.html')
+    if os.path.exists('source.html'):
+        os.remove('source.html')
 
 
 def main(user, passwd):
@@ -178,6 +194,4 @@ def main(user, passwd):
 
 
 if __name__ == '__main__':
-    user = input('username: ')
-    passwd = input('password: ')
     main(user, passwd)
