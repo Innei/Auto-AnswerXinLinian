@@ -46,7 +46,7 @@ def answer_part_one():
     with open('source.html', 'w+', encoding='utf-8') as f:
         f.write(pageSource)
     prase_result()
-    ansll = callback()
+    ansll = callback(0)
     browser.switch_to.default_content()
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '#aPart1'))).click()
     browser.switch_to.frame('mainFrame')
