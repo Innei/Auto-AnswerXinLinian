@@ -6,12 +6,17 @@ from selenium.webdriver.support.ui import Select
 from time import sleep
 from os import remove
 from os.path import exists
+from random import randint
 from parse_answer import *
 from answer import *
 
+opt = webdriver.ChromeOptions()
+opt.headless()
 user = input('username: ')
 passwd = input('password: ')
-browser = webdriver.Chrome()
+wrong = input('你想错几题')
+
+browser = webdriver.Chrome(options=opt)
 browser.get('http://192.168.9.12/npels/')
 wait = WebDriverWait(browser, 10)
 current = 1  # 题号
@@ -27,6 +32,7 @@ def login(name, password):
 def intotest():
     try:
         browser.switch_to.frame('mainFrame')
+        print('登陆成功!')
         start = wait.until(EC.element_to_be_clickable(
             (By.CSS_SELECTOR, '#ctl00_cphContent_divWarning > div > div.homework_3 > ul > li.homework_3_2 > span > a')))
         start.click()
@@ -39,19 +45,19 @@ def intotest():
 
 
 def answer_part_one():
-    global ansll
-    global current
+    global current, wrong, ansll
     sleep(2)
     pageSource = browser.page_source
+    print('获取页面成功,开始解析')
     with open('source.html', 'w+', encoding='utf-8') as f:
         f.write(pageSource)
     prase_result()
-    ansll = callback()
+    ansll = callback(wrong)
+    print('解析成功,开始答题')
     browser.switch_to.default_content()
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '#aPart1'))).click()
+    print('第一部分:')
     browser.switch_to.frame('mainFrame')
-    content = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR,
-                                                              '#form1 > div.content_test > div.class_mag.class_main_tab > div.test_frame > div > ul.choiceList')))
     anlist = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR,
                                                              'ul.choiceList > li > input')))
 
@@ -87,8 +93,7 @@ def answer_part_one():
 
 def answer_part_two():
     global current, ansll
-    read_part = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR,
-                                                           '#form1 > div.content_test > div.class_mag.class_main_tab > div.test_frame > div:nth-child(4) > ul.test_list_5_2 > li > ul.choiceList')))
+    print('第二部分:')
     anlist = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR,
                                                              'ul.choiceList > li > input')))
     flag = 1
@@ -183,6 +188,18 @@ def answer_part_two():
         remove('EnglishAnswer.html')
     if exists('source.html'):
         remove('source.html')
+
+
+def wait_and_submit():
+    r = randint(1500, 2000)
+    sleep(r)
+    print('等待 ' + str(r) + ' 秒')
+    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR,
+                                               '#btnBottomSubmit'))).click()
+    sleep(2)
+    browser.switch_to.alert().accept()
+    print('提交成功')
+    browser.close()
 
 
 def main(user, passwd):

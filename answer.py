@@ -42,4 +42,5 @@ def answer(ttid, sheetid, sttid):
 def prase_result():
     dig = callback_dig()
     answer(dig[0], dig[1], dig[2])
+    print('解析成功')
 
