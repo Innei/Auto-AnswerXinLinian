@@ -3,7 +3,7 @@ from random import randint, choice
 
 
 def main(w=0):
-    content = open('./EnglishAnswer.html').read()
+    content = open('./EnglishAnswer.html',encoding='utf-8').read()
     result = re.findall('答案：</span>([A-Z])</li>', content, re.S)
     section_b = re.findall(
         '答案：</span>([A-Z])、([A-Z])、([A-Z])、([A-Z])、([A-Z])、([A-Z])、([A-Z])、([A-Z])、([A-Z])、([A-Z])</li>', content, re.S)

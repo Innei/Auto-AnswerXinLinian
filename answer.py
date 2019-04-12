@@ -28,7 +28,7 @@ def getanswer(part, ttid, sheetid, sttid):
 
 
 def answer(ttid, sheetid, sttid):
-    fo = open("EnglishAnswer.html", "w+")
+    fo = open("EnglishAnswer.html", "w+", encoding='utf-8')
     try:
         fo.write(getanswer(1, ttid, sheetid, sttid))
         fo.write(getanswer(2, ttid, sheetid, sttid))
@@ -39,8 +39,8 @@ def answer(ttid, sheetid, sttid):
     finally:
         fo.close()
 
+
 def prase_result():
     dig = callback_dig()
     answer(dig[0], dig[1], dig[2])
     print('解析成功')
-
