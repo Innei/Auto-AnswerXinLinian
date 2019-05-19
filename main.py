@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -13,7 +14,7 @@ user = input('username: ')
 passwd = input('password: ')
 browser = webdriver.Chrome()
 browser.get('http://192.168.9.12/npels/')
-wait = WebDriverWait(browser, 10)
+wait = WebDriverWait(browser, 3)
 current = 1  # 题号
 ansll = []
 
@@ -27,12 +28,22 @@ def login(name, password):
 def intotest():
     try:
         browser.switch_to.frame('mainFrame')
-        start = wait.until(EC.element_to_be_clickable(
-            (By.CSS_SELECTOR, '#ctl00_cphContent_divWarning > div > div.homework_3 > ul > li.homework_3_2 > span > a')))
-        start.click()
+
+        try:
+            wait.until(EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, '#ctl00_cphContent_divWarning > div > div.homework_3 > ul > li.homework_3_2 > span > a'))).click()
+        except TimeoutException:
+            browser.close()
+            print('没有测试!!!')
         sleep(1)
-        wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,
+        try:
+            wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,
                                                '#ctl00_ContentPlaceHolder1_CourseTestTask1_dgTestTask_ctl03_Action > span > input[type="button"]'))).click()
+        except TimeoutException:
+            wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,
+                                               '#ctl00_ContentPlaceHolder1_CourseTestTask1_dgTestTask_ctl04_Action > span > input[type="button"]'))).click()
+
+
         sleep(1)
     except TimeoutError:
         return intotest()
@@ -50,8 +61,6 @@ def answer_part_one():
     browser.switch_to.default_content()
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '#aPart1'))).click()
     browser.switch_to.frame('mainFrame')
-    content = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR,
-                                                              '#form1 > div.content_test > div.class_mag.class_main_tab > div.test_frame > div > ul.choiceList')))
     anlist = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR,
                                                              'ul.choiceList > li > input')))
 
@@ -87,8 +96,6 @@ def answer_part_one():
 
 def answer_part_two():
     global current, ansll
-    read_part = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR,
-                                                           '#form1 > div.content_test > div.class_mag.class_main_tab > div.test_frame > div:nth-child(4) > ul.test_list_5_2 > li > ul.choiceList')))
     anlist = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR,
                                                              'ul.choiceList > li > input')))
     flag = 1
