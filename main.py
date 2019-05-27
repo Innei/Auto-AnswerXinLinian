@@ -124,16 +124,24 @@ def answer_part_two():
             current += 1
 
         flag += 1
-    section_b = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR,
+    try:
+        section_b = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR,
                                                                 '#form1 > div.content_test > div.class_mag.class_main_tab > div.test_frame > div:nth-child(7) > ul.test_list_2 > li > input')))
+    except TimeoutException:
+        print('没有找到Section B的内容')
 
-    for item in section_b:
-        item.clear()
-        item.send_keys(ansll[current - 1])
-        current += 1
+    else:
+        for item in section_b:
+            item.clear()
+            item.send_keys(ansll[current - 1])
+            current += 1
 
-    section_c = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR,
+    try:
+        section_c = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR,
                                                                 '#form1 > div.content_test > div.class_mag.class_main_tab > div.test_frame > div:nth-child(10) > ul > li > span > select')))
+    except TimeoutException:
+        section_c = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'div.test_frame > div:nth-child(7) > ul > li > span.test_match_2_2 > select')))
+
     for select in section_c:
         if ansll[current - 1] == 'A':
             Select(select).select_by_index(0)
